@@ -1,6 +1,27 @@
-use std::collections::{HashMap, VecDeque};
+use std::cmp::Ordering;
+use std::collections::{BinaryHeap, HashMap};
 
 type Coord = (usize, usize);
+
+#[derive(Eq, PartialEq)]
+struct State {
+    risk: usize,
+    pos: Coord,
+}
+
+// Copy ordering code from BinaryHeap example on official docs
+impl Ord for State {
+    fn cmp(&self, other: &Self) -> Ordering {
+        other.risk.cmp(&self.risk)
+            .then_with(|| self.pos.cmp(&other.pos))
+    }
+}
+
+impl PartialOrd for State {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
 
 fn adjusted_risk(risk: usize, offset: usize) -> usize {
     let mut new_risk = risk + offset;
@@ -42,19 +63,19 @@ fn solve(input: String, tiles: usize) -> usize {
     };
 
     let mut risks: HashMap<Coord, usize> = HashMap::from([((1, 1), 0)]);
-    let mut spelunking: VecDeque<(Coord, usize)> = VecDeque::from([((1, 1), 0)]);
+    let mut spelunking: BinaryHeap<State> = BinaryHeap::from([State { risk: 0, pos: (1, 1) }]);
 
     while !spelunking.is_empty() {
-        let (pos, path_risk) = spelunking.pop_front().unwrap();
-        for neighbor in get_neighbors(pos) {
+        let state = spelunking.pop().unwrap();
+        for neighbor in get_neighbors(state.pos) {
             let current_risk = match risks.get(&neighbor) {
                 Some(&r) => r,
                 None => usize::MAX,
             };
-            let new_risk = path_risk + risk_map[&neighbor];
+            let new_risk = state.risk + risk_map[&neighbor];
             if new_risk < current_risk {
                 risks.insert(neighbor, new_risk);
-                spelunking.push_back((neighbor, new_risk));
+                spelunking.push(State { risk: new_risk, pos: neighbor });
             }
         }
     }
@@ -63,31 +84,9 @@ fn solve(input: String, tiles: usize) -> usize {
 }
 
 pub fn part1(input: String) {
-    let sample = "1163751742
-1381373672
-2136511328
-3694931569
-7463417111
-1319128137
-1359912421
-3125421639
-1293138521
-2311944581".to_string();
-    assert_eq!(solve(sample.clone(), 1), 40);
     println!("{}", solve(input, 1));
 }
 
 pub fn part2(input: String) {
-    let sample = "1163751742
-1381373672
-2136511328
-3694931569
-7463417111
-1319128137
-1359912421
-3125421639
-1293138521
-2311944581".to_string();
-    assert_eq!(solve(sample.clone(), 5), 315);
     println!("{}", solve(input, 5));
 }

@@ -23,9 +23,16 @@ impl Op {
             5 => Op::GreaterThan,
             6 => Op::LessThan,
             7 => Op::EqualTo,
-            _ => panic!()
+            _ => unreachable!()
         }
     }
+}
+
+
+#[derive(Debug)]
+enum Payload {
+    Value(u64),
+    SubPackets(Vec<Packet>),
 }
 
 
@@ -34,9 +41,7 @@ struct Packet {
     version: u32,
     op: Op,
     bit_length: u32,
-    value: Option<u32>,
-    // For literals
-    sub_packets: Vec<Packet>,  // For operators
+    payload: Payload,
 }
 
 fn get_num(stream: &mut Iter<u8>, num_bits: usize) -> u32 {
@@ -49,42 +54,44 @@ fn get_num(stream: &mut Iter<u8>, num_bits: usize) -> u32 {
 
 impl Packet {
     fn version_total(&self) -> u32 {
-        let mut total = self.version;
-        for sp in self.sub_packets.iter() {
-            total += sp.version_total();
+        self.version + match &self.payload {
+            Payload::Value(_) => 0,
+            Payload::SubPackets(subpackets) => subpackets.iter().map(|p| p.version_total()).sum()
         }
-        total
     }
 
-    fn get_value(&self) -> u128 {
+    fn get_value(&self) -> u64 {
         use Op::*;
-        match self.op {
-            Sum => {
-                self.sub_packets.iter().map(|packet| packet.get_value()).sum()
-            }
-            Product => {
-                self.sub_packets.iter().map(|packet| packet.get_value()).product()
-            }
-            Minimum => {
-                self.sub_packets.iter().map(|packet| packet.get_value()).min().unwrap()
-            }
-            Maximum => {
-                self.sub_packets.iter().map(|packet| packet.get_value()).max().unwrap()
-            }
-            Literal => {
-                self.value.unwrap() as u128
-            }
-            GreaterThan => {
-                assert_eq!(self.sub_packets.len(), 2);
-                if self.sub_packets.first().unwrap().get_value() > self.sub_packets.last().unwrap().get_value() { 1 } else { 0 }
-            }
-            LessThan => {
-                assert_eq!(self.sub_packets.len(), 2);
-                if self.sub_packets.first().unwrap().get_value() < self.sub_packets.last().unwrap().get_value() { 1 } else { 0 }
-            }
-            EqualTo => {
-                assert_eq!(self.sub_packets.len(), 2);
-                if self.sub_packets.first().unwrap().get_value() == self.sub_packets.last().unwrap().get_value() { 1 } else { 0 }
+        match &self.payload {
+            Payload::Value(n) => *n,
+            Payload::SubPackets(packets) => {
+                match &self.op {
+                    Sum => {
+                        packets.iter().map(|packet| packet.get_value()).sum()
+                    }
+                    Product => {
+                        packets.iter().map(|packet| packet.get_value()).product()
+                    }
+                    Minimum => {
+                        packets.iter().map(|packet| packet.get_value()).min().unwrap()
+                    }
+                    Maximum => {
+                        packets.iter().map(|packet| packet.get_value()).max().unwrap()
+                    }
+                    GreaterThan => {
+                        assert_eq!(packets.len(), 2);
+                        if packets.first().unwrap().get_value() > packets.last().unwrap().get_value() { 1 } else { 0 }
+                    }
+                    LessThan => {
+                        assert_eq!(packets.len(), 2);
+                        if packets.first().unwrap().get_value() < packets.last().unwrap().get_value() { 1 } else { 0 }
+                    }
+                    EqualTo => {
+                        assert_eq!(packets.len(), 2);
+                        if packets.first().unwrap().get_value() == packets.last().unwrap().get_value() { 1 } else { 0 }
+                    }
+                    _ => unreachable!()
+                }
             }
         }
     }
@@ -96,15 +103,15 @@ impl Packet {
         match op {
             Op::Literal => {
                 let mut done = false;
-                let mut value = 0u32;
+                let mut value = 0u64;
                 while !done {
                     done = get_num(bit_stream, 1) == 0;
-                    let nibble = get_num(bit_stream, 4);
+                    let nibble = get_num(bit_stream, 4) as u64;
                     bit_length += 5;
                     value <<= 4;
                     value += nibble;
                 }
-                Packet { version, op, value: Some(value), bit_length, sub_packets: vec![] }
+                Packet { version, op, bit_length, payload: Payload::Value(value) }
             }
             _ => {
                 bit_length += 1;
@@ -119,7 +126,8 @@ impl Packet {
                             sub_bits_read += sub_packet.bit_length;
                             sub_packets.push(sub_packet);
                         }
-                        Packet { version, op, bit_length, sub_packets, value: None }
+                        assert_eq!(sub_bits_read, sub_packet_bit_length);
+                        Packet { version, op, bit_length, payload: Payload::SubPackets(sub_packets) }
                     }
                     1 => {
                         let num_sub_packets = get_num(bit_stream, 11);
@@ -130,9 +138,9 @@ impl Packet {
                             bit_length += sub_packet.bit_length;
                             sub_packets.push(sub_packet);
                         }
-                        Packet { version, op, bit_length, sub_packets, value: None }
+                        Packet { version, op, bit_length, payload: Payload::SubPackets(sub_packets) }
                     }
-                    _ => panic!("That is not a bit")
+                    _ => unreachable!()
                 }
             }
         }
@@ -157,7 +165,7 @@ fn string_to_bit_stream(s: String) -> Vec<u8> {
         'D' => vec![1, 1, 0, 1],
         'E' => vec![1, 1, 1, 0],
         'F' => vec![1, 1, 1, 1],
-        _ => panic!("Not hex: {}", c)
+        _ => unreachable!()
     }).flatten().collect::<Vec<u8>>()
 }
 
@@ -196,7 +204,7 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        let cases = HashMap::from([
+        let cases = vec![
             (String::from("C200B40A82"), 3),
             (String::from("04005AC33890"), 54),
             (String::from("880086C3E88112"), 7),
@@ -205,7 +213,7 @@ mod tests {
             (String::from("F600BC2D8F"), 0),
             (String::from("9C005AC2F8F0"), 0),
             (String::from("9C0141080250320F1802104A08"), 1),
-        ]);
+        ];
 
 
         for (data, expected) in cases {

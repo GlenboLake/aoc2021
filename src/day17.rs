@@ -5,23 +5,6 @@ fn sign(x: i32) -> i32 {
     if x > 0 { 1 } else if x < 0 { -1 } else { 0 }
 }
 
-#[derive(Debug)]
-struct Probe {
-    x: i32,
-    y: i32,
-    dx: i32,
-    dy: i32,
-}
-
-impl Probe {
-    fn step(&mut self) {
-        self.x += self.dx;
-        self.y += self.dy;
-        self.dx -= sign(self.dx);
-        self.dy -= 1;
-    }
-}
-
 
 fn parse_target(s: String) -> (Range<i32>, Range<i32>) {
     let r = Regex::new(r"target area: x=(-?\d+)..(-?\d+), y=(-?\d+)..(-?\d+)").unwrap();
@@ -32,13 +15,17 @@ fn parse_target(s: String) -> (Range<i32>, Range<i32>) {
     )
 }
 
-fn launch_probe(dx: i32, dy: i32, x_range: Range<i32>, y_range: Range<i32>) -> (bool, i32) {
-    let mut probe = Probe { x: 0, y: 0, dx, dy };
-    let mut peak = probe.y;
-    while probe.y > y_range.start {
-        probe.step();
-        peak = peak.max(probe.y);
-        if x_range.contains(&probe.x) && y_range.contains(&probe.y) {
+fn launch_probe(mut dx: i32, mut dy: i32, x_range: Range<i32>, y_range: Range<i32>) -> (bool, i32) {
+    let mut x = 0;
+    let mut y = 0;
+    let mut peak = y;
+    while y > y_range.start {
+        x += dx;
+        y += dy;
+        dx -= sign(dx);
+        dy -= 1;
+        peak = peak.max(y);
+        if x_range.contains(&x) && y_range.contains(&y) {
             return (true, peak);
         }
     }

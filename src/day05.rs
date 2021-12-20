@@ -56,7 +56,7 @@ fn parse_input(input: String) -> Vec<Line> {
 }
 
 
-pub fn part1(input: String) {
+pub fn part1(input: String) -> i32 {
     let lines = parse_input(input);
 
     let mut vents: HashMap<Point, i32> = HashMap::new();
@@ -74,10 +74,10 @@ pub fn part1(input: String) {
             total += 1
         }
     }
-    println!("{}", total);
+    total
 }
 
-pub fn part2(input: String) {
+pub fn part2(input: String) -> i32 {
     let lines = parse_input(input);
     let mut vents: HashMap<Point, i32> = HashMap::new();
 
@@ -93,5 +93,5 @@ pub fn part2(input: String) {
             total += 1
         }
     }
-    println!("{}", total);
+    total
 }

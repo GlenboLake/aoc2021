@@ -13,7 +13,7 @@ fn size(cave: &str) -> Size {
 }
 
 
-pub fn part1(input: String) {
+pub fn part1(input: String) -> i32 {
     let mut map: HashMap<&str, HashSet<&str>> = HashMap::new();
 
     for line in input.lines() {
@@ -44,10 +44,10 @@ pub fn part1(input: String) {
             }
         }
     }
-    println!("There are {} paths", total_paths);
+    total_paths
 }
 
-pub fn part2(input: String) {
+pub fn part2(input: String) -> i32 {
     let mut map: HashMap<&str, Vec<&str>> = HashMap::new();
 
     for line in input.lines() {
@@ -78,5 +78,5 @@ pub fn part2(input: String) {
             }
         }
     }
-    println!("There are {} paths", total_paths);
+    total_paths
 }

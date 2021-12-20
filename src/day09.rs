@@ -15,7 +15,7 @@ fn parse_input(input: String) -> HashMap<Coord, i32> {
     height_map
 }
 
-pub fn part1(input: String) {
+pub fn part1(input: String) -> i32 {
     let height_map = parse_input(input);
     let mut risk = 0;
     for ((r, c), value) in height_map.clone() {
@@ -27,7 +27,7 @@ pub fn part1(input: String) {
             risk += value + 1;
         }
     }
-    println!("{}", risk);
+    risk
 }
 
 type Basin = HashSet<Coord>;
@@ -62,7 +62,7 @@ fn explore_basin(map: &HashMap<Coord, i32>, start: &Coord) -> Basin {
 
 const RIDGE: &i32 = &9;
 
-pub fn part2(input: String) {
+pub fn part2(input: String) -> i32 {
     let height_map = parse_input(input);
     let mut seen: HashSet<Coord> = HashSet::new();
 
@@ -77,5 +77,5 @@ pub fn part2(input: String) {
     }
     basin_sizes.sort_by(|a, b| b.partial_cmp(a).unwrap());
     basin_sizes.truncate(3);
-    println!("{}", basin_sizes.into_iter().reduce(|a,b|a*b).unwrap());
+    basin_sizes.into_iter().reduce(|a,b|a*b).unwrap() as i32
 }

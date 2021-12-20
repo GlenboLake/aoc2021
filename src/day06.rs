@@ -42,20 +42,20 @@ fn solve(init_state: [i64; 9], iters: usize) -> i64 {
     result
 }
 
-pub fn part1(input: String) {
+pub fn part1(input: String) -> i32 {
     let mut counts = [0i64; 9];
     for n in input.split(",").map(|x| x.trim().parse::<usize>().unwrap()) {
         counts[n] += 1;
     }
 
-    println!("{}", solve(counts, 80));
+    solve(counts, 80) as i32
 }
 
-pub fn part2(input: String) {
+pub fn part2(input: String) -> i32 {
     let mut counts = [0i64; 9];
     for n in input.split(",").map(|x| x.trim().parse::<usize>().unwrap()) {
         counts[n] += 1;
     }
 
-    println!("{}", solve(counts, 256));
+    solve(counts, 256) as i32
 }

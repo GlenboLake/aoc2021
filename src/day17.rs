@@ -32,7 +32,7 @@ fn launch_probe(mut dx: i32, mut dy: i32, x_range: Range<i32>, y_range: Range<i3
     return (false, peak);
 }
 
-pub fn part1(input: String) {
+pub fn part1(input: String) -> i32 {
     let (_, y_range) = parse_target(input);
 
     // Find possible initial Y values
@@ -43,10 +43,10 @@ pub fn part1(input: String) {
             best_peak = best_peak.max(peak);
         }
     }
-    println!("{}", best_peak);
+    best_peak
 }
 
-pub fn part2(input: String) {
+pub fn part2(input: String) -> i32 {
     let (x_range, y_range) = parse_target(input);
 
     let ymin = y_range.start;
@@ -80,5 +80,5 @@ pub fn part2(input: String) {
             }
         }
     }
-    println!("{}", total);
+    total
 }

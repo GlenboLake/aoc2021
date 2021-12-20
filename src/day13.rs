@@ -70,10 +70,12 @@ pub fn solve(input: String, max_folds: usize, print_result: bool) {
     }
 }
 
-pub fn part1(input: String) {
+pub fn part1(input: String) -> i32 {
     solve(input, 1, false);
+    0
 }
 
-pub fn part2(input: String) {
+pub fn part2(input: String) -> i32 {
     solve(input, usize::MAX, true);
+    0
 }

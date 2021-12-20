@@ -164,17 +164,17 @@ fn magnitude(sn: SnailfishNumber) -> i32 {
     simple_rep.parse().unwrap()
 }
 
-pub fn part1(input: String) {
+pub fn part1(input: String) -> i32{
     let mut numbers: VecDeque<SnailfishNumber> = VecDeque::from(
         input.lines().map(|line| reduce(tokenize(line))).collect::<Vec<_>>());
     let mut result = numbers.pop_front().unwrap();
     for next in numbers {
         result = reduce(add(result, next));
     }
-    println!("{}", magnitude(result));
+    magnitude(result)
 }
 
-pub fn part2(input: String) {
+pub fn part2(input: String) -> i32 {
     let numbers: Vec<_> = input.lines().map(|line| reduce(tokenize(line))).collect();
 
     let mut best = 0;
@@ -184,7 +184,7 @@ pub fn part2(input: String) {
             best = best.max(magnitude(reduce(add(a.clone(), b.clone()))));
         }
     }
-    println!("{}", best);
+    best
 }
 
 

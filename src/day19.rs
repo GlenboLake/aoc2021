@@ -38,7 +38,6 @@ impl Vec3 {
         dx * dx + dy * dy + dz * dz
     }
 
-    #[allow(dead_code)]
     fn manhattan_to(&self, other: &Self) -> i32 {
         (self.x - other.x).abs() + (self.y - other.y).abs() + (self.z - other.z).abs()
     }
@@ -57,7 +56,6 @@ impl Vec3 {
         vec![self.x, self.y, self.z]
     }
 
-    #[allow(dead_code)]
     fn from_vec(v: Vec<i32>) -> Self {
         assert_eq!(v.len(), 3, "from_vec received {} numbers", v.len());
         Self { x: v[0], y: v[1], z: v[2] }
@@ -68,6 +66,7 @@ impl Vec3 {
 #[derive(Clone)]
 struct Scanner {
     id: usize,
+    pos: Option<Vec3>,
     beacons: HashMap<Vec3, HashSet<i32>>,
 }
 
@@ -89,7 +88,7 @@ impl Scanner {
             dists.remove(&0);
             beacons.insert(v, dists);
         }
-        Scanner { id, beacons }
+        Scanner { id, pos: None, beacons }
     }
 
     fn overlap_with(&self, other: &Self) -> HashMap<Vec3, Vec3> {
@@ -139,7 +138,7 @@ impl Scanner {
         let new_beacons = self.beacons.iter()
             .map(|(v, dists)| (v.transform(rotation, translation), dists.clone()))
             .collect();
-        Self { id: self.id, beacons: new_beacons }
+        Self { id: self.id, pos: Some(Vec3::from_vec(translation.to_vec())), beacons: new_beacons }
     }
 }
 
@@ -155,10 +154,11 @@ fn parse_input(input: String) -> Vec<Scanner> {
         .collect::<Vec<_>>()
 }
 
-#[allow(unused_variables)]
-pub fn part1(_input: String) -> i32 {
-    let mut scanners = VecDeque::from(parse_input(_input));
-    let mut known = vec![scanners.pop_front().unwrap()];
+fn solve_scanners(scanners: Vec<Scanner>) -> Vec<Scanner> {
+    let mut scanners = VecDeque::from(scanners);
+    let mut init_scanner = scanners.pop_front().unwrap();
+    init_scanner.pos = Some(Vec3::from_vec(vec![0, 0, 0]));
+    let mut known = vec![init_scanner];
     while !scanners.is_empty() {
         'outer: for k in known.clone().iter() {
             for (i, s) in scanners.clone().iter().enumerate() {
@@ -176,13 +176,34 @@ pub fn part1(_input: String) -> i32 {
             }
         }
     }
-    known.iter()
+    known
+}
+
+pub fn part1(input: String) -> i32 {
+    solve_scanners(parse_input(input)).iter()
         .flat_map(|s| s.beacons.keys())
         .collect::<HashSet<_>>()
         .len() as i32
 }
 
-pub fn part2(_input: String) -> i32 { 0 }
+pub fn part2(input: String) -> i32 {
+    let scanners = solve_scanners(parse_input(input)).iter()
+        .map(|s| match s.pos {
+            Some(p) => p,
+            None => unreachable!(),
+        })
+        .collect::<Vec<_>>();
+    let mut result = 0;
+    for i in 0..scanners.len() {
+        for j in i+1..scanners.len() {
+            let a = scanners.get(i).unwrap();
+            let b = scanners.get(j).unwrap();
+            let dist = a.manhattan_to(b);
+            result = result.max(dist);
+        }
+    }
+    result
+}
 
 #[cfg(test)]
 mod tests {

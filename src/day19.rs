@@ -179,14 +179,16 @@ fn solve_scanners(scanners: Vec<Scanner>) -> Vec<Scanner> {
     known
 }
 
-pub fn part1(input: String) -> i32 {
+pub fn do_part1(input: String) -> usize {
     solve_scanners(parse_input(input)).iter()
         .flat_map(|s| s.beacons.keys())
         .collect::<HashSet<_>>()
-        .len() as i32
+        .len()
 }
 
-pub fn part2(input: String) -> i32 {
+pub fn part1(input: String) { println!("{}", do_part1(input)); }
+
+pub fn do_part2(input: String) -> i32 {
     let scanners = solve_scanners(parse_input(input)).iter()
         .map(|s| match s.pos {
             Some(p) => p,
@@ -195,7 +197,7 @@ pub fn part2(input: String) -> i32 {
         .collect::<Vec<_>>();
     let mut result = 0;
     for i in 0..scanners.len() {
-        for j in i+1..scanners.len() {
+        for j in i + 1..scanners.len() {
             let a = scanners.get(i).unwrap();
             let b = scanners.get(j).unwrap();
             let dist = a.manhattan_to(b);
@@ -205,6 +207,8 @@ pub fn part2(input: String) -> i32 {
     result
 }
 
+pub fn part2(input: String) { println!("{}", do_part2(input)); }
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -212,6 +216,12 @@ mod tests {
     #[test]
     fn test_part1() {
         let input = String::from(include_str!("../inputs/day19_test.txt"));
-        assert_eq!(part1(input), 79);
+        assert_eq!(do_part1(input), 79);
+    }
+
+    #[test]
+    fn test_part2() {
+        let input = String::from(include_str!("../inputs/day19_test.txt"));
+        assert_eq!(do_part2(input), 3621);
     }
 }

@@ -9,7 +9,7 @@ fn parse_input(input: String) -> [i32; 2] {
 }
 
 
-pub fn part1(input: String) -> i32 {
+fn do_part1(input: String) -> i32 {
     let mut pos = parse_input(input);
     let mut scores = [0, 0];
     let mut turns = 0;
@@ -36,6 +36,8 @@ pub fn part1(input: String) -> i32 {
     }
     turns * scores[active_player]
 }
+
+pub fn part1(input: String) { println!("{}", do_part1(input)) }
 
 
 #[derive(Debug)]
@@ -107,15 +109,17 @@ impl GameState {
 }
 
 
-pub fn part2(input: String) -> i32 {
+fn do_part2(input: String) -> i64 {
     let game = GameState {
         players: parse_input(input).map(|pos| PlayerState { pos, score: 0 }),
         active_player: 0,
     };
 
     let (p1_wins, p2_wins) = game.count_winners();
-    p1_wins.max(p2_wins) as i32
+    p1_wins.max(p2_wins)
 }
+
+pub fn part2(input: String) { println!("{}", do_part2(input)) }
 
 #[cfg(test)]
 mod tests {
@@ -125,11 +129,11 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(part1(SAMPLE.to_string()), 739785);
+        assert_eq!(do_part1(SAMPLE.to_string()), 739785);
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(part2(SAMPLE.to_string()), 444356092776315);
+        assert_eq!(do_part2(SAMPLE.to_string()), 444356092776315);
     }
 }

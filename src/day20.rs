@@ -133,6 +133,6 @@ pub fn solve(input: String, iterations: usize) -> i32 {
     image.lit_pixels.len() as i32
 }
 
-pub fn part1(input: String) -> i32 { solve(input, 2) }
+pub fn part1(input: String) { println!("{}", solve(input, 2)); }
 
-pub fn part2(input: String) -> i32 { solve(input, 50) }
+pub fn part2(input: String) { println!("{}", solve(input, 50)); }

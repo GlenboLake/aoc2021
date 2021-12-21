@@ -31,7 +31,7 @@ fn linear_solve(input: String, sum_fn: SumFunction) {
     println!("{}", best);
 }
 
-fn solve(input: String, sum_fn: SumFunction) -> i32 {
+fn solve(input: String, sum_fn: SumFunction) {
     // Second attempt with binary search;
     let crabs: Vec<i32> = input.trim().split(",").map(|crab| crab.parse::<i32>().unwrap()).collect();
 
@@ -60,13 +60,13 @@ fn solve(input: String, sum_fn: SumFunction) -> i32 {
         }
         pos = (left + right) / 2;
     }
-    sum_fn(&crabs, pos)
+    println!("{}", sum_fn(&crabs, pos));
 }
 
-pub fn part1(input: String)-> i32 {
+pub fn part1(input: String) {
     solve(input, lin_cost)
 }
 
-pub fn part2(input: String)-> i32 {
+pub fn part2(input: String) {
     solve(input, cum_cost)
 }

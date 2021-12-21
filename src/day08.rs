@@ -4,7 +4,7 @@ fn set(s: &String) -> HashSet<char> {
     s.chars().collect::<HashSet<char>>()
 }
 
-pub fn part1(input: String) -> i32 {
+pub fn part1(input: String) {
     let lines: Vec<&str> = input.trim().split("\n").collect();
     let lengths = vec![2usize, 4, 3, 7];
     let mut total = 0usize;
@@ -14,10 +14,10 @@ pub fn part1(input: String) -> i32 {
         outputs.retain(|x| lengths.contains(x));
         total += outputs.len();
     }
-    total as i32
+    println!("{}", total);
 }
 
-pub fn part2(input: String) -> i32 {
+pub fn part2(input: String) {
     let lines: Vec<&str> = input.trim().split("\n").collect();
     let nums: Vec<usize> = lines.iter().map(|line| {
         let mut mapping: HashMap<String, usize> = HashMap::new();
@@ -98,5 +98,5 @@ pub fn part2(input: String) -> i32 {
         }
         result
     }).collect();
-    nums.iter().sum::<usize>() as i32
+    println!("{}", nums.iter().sum::<usize>());
 }

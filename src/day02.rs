@@ -1,4 +1,4 @@
-pub fn part1(input: String) -> i32 {
+pub fn part1(input: String) {
     let instructions: Vec<&str> = input.lines().collect();
 
     let mut pos = 0;
@@ -15,10 +15,10 @@ pub fn part1(input: String) -> i32 {
             _ => panic!()
         }
     }
-    pos * depth
+    println!("{}", pos * depth);
 }
 
-pub fn part2(input: String) -> i32 {
+pub fn part2(input: String) {
     let instructions: Vec<&str> = input.lines().collect();
 
     let mut pos = 0;
@@ -39,5 +39,5 @@ pub fn part2(input: String) -> i32 {
             _ => panic!()
         }
     }
-    pos * depth
+    println!("{}", pos * depth);
 }

@@ -83,10 +83,10 @@ fn solve(input: String, tiles: usize) -> usize {
     *risks.get(target).unwrap()
 }
 
-pub fn part1(input: String) -> i32 {
-    solve(input, 1) as i32
+pub fn part1(input: String) {
+    println!("{}", solve(input, 1));
 }
 
-pub fn part2(input: String) -> i32 {
-    solve(input, 5) as i32
+pub fn part2(input: String) {
+    println!("{}", solve(input, 5));
 }

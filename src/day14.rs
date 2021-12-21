@@ -38,10 +38,10 @@ fn solve(input: String, iters: i32) -> usize {
     freqs.values().max().unwrap() - freqs.values().min().unwrap()
 }
 
-pub fn part1(input: String) -> i32 {
-    solve(input, 10) as i32
+pub fn part1(input: String) {
+    println!("{}", solve(input, 10));
 }
 
-pub fn part2(input: String) -> i32 {
-    solve(input, 40) as i32
+pub fn part2(input: String) {
+    println!("{}", solve(input, 40));
 }

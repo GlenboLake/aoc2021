@@ -1,4 +1,4 @@
-pub fn part1(input: String) -> i32 {
+pub fn part1(input: String) {
     let mut prev = u16::MAX;
     let mut count = 0;
     for value in input.trim().split_whitespace().map(|s| s.parse().unwrap()) {
@@ -7,10 +7,10 @@ pub fn part1(input: String) -> i32 {
         }
         prev = value;
     }
-    count
+    println!("{}", count);
 }
 
-pub fn part2(input: String) -> i32 {
+pub fn part2(input: String) {
     let mut a = u32::MAX / 3;
     let mut b = u32::MAX / 3;
     let mut c = u32::MAX / 3;
@@ -23,5 +23,5 @@ pub fn part2(input: String) -> i32 {
         b = c;
         c = value;
     }
-    count
+    println!("{}", count);
 }

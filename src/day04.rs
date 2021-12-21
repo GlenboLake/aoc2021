@@ -76,21 +76,21 @@ fn parse_input(s: String) -> (Vec<i32>, Vec<Board>) {
 }
 
 
-pub fn part1(input: String) -> i32 {
+pub fn part1(input: String) {
     let (nums, boards) = parse_input(input);
 
     for i in 1..nums.len() {
         let called_nums = &nums[0..i];
         for board in &boards {
             if board.check(called_nums) {
-                return board.score(called_nums);
+                println!("{}", board.score(called_nums));
+                return;
             }
         }
     }
-    unreachable!()
 }
 
-pub fn part2(input: String) -> i32 {
+pub fn part2(input: String) {
     let (nums, boards) = parse_input(input);
 
     let mut last_score = 0;
@@ -108,5 +108,5 @@ pub fn part2(input: String) -> i32 {
             }
         }
     }
-    last_score
+    println!("{}", last_score);
 }

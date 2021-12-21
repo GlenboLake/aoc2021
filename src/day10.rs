@@ -62,7 +62,7 @@ fn score_line(line: &str) -> (State, u64) {
     (Incomplete, score)
 }
 
-pub fn part1(input: String) -> i32 {
+pub fn part1(input: String) {
     let total: u64 = input.split("\n")
         .map(|line| {
             let (state, score) = score_line(line);
@@ -73,10 +73,10 @@ pub fn part1(input: String) -> i32 {
             }
         })
         .sum();
-    total as i32
+    println!("{}", total);
 }
 
-pub fn part2(input: String) -> i32 {
+pub fn part2(input: String) {
     let mut scores: Vec<u64> = input.split("\n")
         .map(|line| {
             let (state, score) = score_line(line);
@@ -88,5 +88,5 @@ pub fn part2(input: String) -> i32 {
         }).collect();
     scores.retain(|&score| score > 0);
     scores.sort();
-    scores[scores.len()/2] as i32
+    println!("{}", scores[scores.len()/2]);
 }

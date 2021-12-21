@@ -13,7 +13,7 @@ fn common_value(items: &Vec<&str>, pos: usize) -> char {
         .unwrap()
 }
 
-pub fn part1(input: String) -> i32 {
+pub fn part1(input: String) {
     let instructions: Vec<&str> = input.lines().collect();
     let n_bits = instructions[0].len();
 
@@ -30,10 +30,10 @@ pub fn part1(input: String) -> i32 {
         };
     }
 
-    gamma * epsilon
+    println!("{}", gamma * epsilon);
 }
 
-pub fn part2(input: String) -> i32 {
+pub fn part2(input: String) {
     let instructions: Vec<&str> = input.lines().collect();
 
     let mut candidates = instructions.clone();
@@ -52,5 +52,5 @@ pub fn part2(input: String) -> i32 {
     }
     let co2_rating = i32::from_str_radix(candidates.pop().unwrap(), 2).unwrap();
 
-    o2_rating * co2_rating
+    println!("{}", o2_rating * co2_rating);
 }

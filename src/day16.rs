@@ -169,16 +169,16 @@ fn string_to_bit_stream(s: String) -> Vec<u8> {
     }).flatten().collect::<Vec<u8>>()
 }
 
-pub fn part1(input: String) -> i32 {
+pub fn part1(input: String) {
     let bits = string_to_bit_stream(input);
     let packet = Packet::from_bitstream(&mut bits.iter());
-    packet.version_total() as i32
+    println!("{}", packet.version_total());
 }
 
-pub fn part2(input: String) -> i32 {
+pub fn part2(input: String) {
     let bits = string_to_bit_stream(input);
     let packet = Packet::from_bitstream(&mut bits.iter());
-    packet.get_value() as i32
+    println!("{}", packet.get_value());
 }
 
 #[cfg(test)]

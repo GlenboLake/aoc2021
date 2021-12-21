@@ -82,16 +82,16 @@ impl OctoGrid {
     }
 }
 
-pub fn part1(input: String) -> i32 {
+pub fn part1(input: String) {
     let mut octos = OctoGrid::from_str(input);
 
     for _ in 0..100 {
         octos.step();
     }
-    octos.total_flashes
+    println!("{}", octos.total_flashes);
 }
 
-pub fn part2(input: String) -> i32 {
+pub fn part2(input: String) {
     let mut octos = OctoGrid::from_str(input);
 
     let mut steps = 0;
@@ -99,7 +99,8 @@ pub fn part2(input: String) -> i32 {
         let num_flashes = octos.step();
         steps += 1;
         if num_flashes == octos.size() {
-            return steps;
+            println!("{}", steps);
+            break;
         }
     }
 }
